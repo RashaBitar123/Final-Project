@@ -1,14 +1,17 @@
 import { Button, Grid, IconButton, TextField, Typography } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import "./TeacherPopup.css";
 import CloseIcon from "@mui/icons-material/Close";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 //thunks
-import { createTeacherRequest } from "../../../store/thunks/teachersThunk";
+import {
+  createTeacherRequest,
+  updateTeacherRequest,
+} from "../../../store/thunks/teachersThunk";
 
 type TeacherPopupProps = {
-  id?: number;
+  id?: string;
   closePopup: any;
 };
 
@@ -20,12 +23,27 @@ type TeacherState = {
 
 function TeacherPopup(props: TeacherPopupProps) {
   const dispatch = useDispatch<any>();
+
+  //redux states
+  const teachers = useSelector((state: any) => state.TeachersReducer);
+
   //local state
   const [teacher, setTeacher] = useState<TeacherState>({
     name: "",
     email: "",
     speciality: "",
   });
+  const getTeacherById = () => {
+    return teachers.filter((teacher: any, index: number) => {
+      if (teacher.id == props.id) {
+        setTeacher(teachers[index]);
+      }
+    });
+  };
+  useEffect(() => {
+    getTeacherById();
+  }, []);
+
   // console.log("teacher", teacher);
   const handleOnNameChange = (event: any) => {
     let value = event.target.value;
@@ -41,7 +59,15 @@ function TeacherPopup(props: TeacherPopupProps) {
     setTeacher({ ...teacher, speciality: value });
   };
   const handleOnSubmit = () => {
-    dispatch(createTeacherRequest(teacher, props.closePopup));
+    props.id
+      ? dispatch(
+          updateTeacherRequest(
+            props.id,
+            { name: teacher.name, speciality: teacher.speciality },
+            props.closePopup
+          )
+        )
+      : dispatch(createTeacherRequest(teacher, props.closePopup));
   };
 
   return (
@@ -80,6 +106,7 @@ function TeacherPopup(props: TeacherPopupProps) {
               label="Teacher Email"
               variant="outlined"
               fullWidth
+              disabled={props.id ? true : false}
               name="email"
               value={teacher.email}
               onChange={handleOnEmailChange}

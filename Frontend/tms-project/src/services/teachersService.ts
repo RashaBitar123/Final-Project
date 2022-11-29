@@ -6,12 +6,16 @@ const getAllTeachers = () => {
 const createTeacher = (teacher: any) => {
   return httpCommon.post("Teachers", teacher);
 };
+const updateTeacher = (id: string, teacher: any) => {
+  return httpCommon.put(`Teachers/${id}`, teacher);
+};
 const deleteTeacher = (id: string) => {
   return httpCommon.delete(`Teachers/${id}`);
 };
 const TeachersService = {
   getAllTeachers,
   createTeacher,
+  updateTeacher,
   deleteTeacher,
 };
 

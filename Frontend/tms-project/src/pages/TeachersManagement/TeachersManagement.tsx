@@ -17,7 +17,10 @@ import DeleteIcon from "@mui/icons-material/Delete";
 function TeachersManagement() {
   const dispatch = useDispatch<any>();
   //local state
-  const [IsTeacherPopup, setIsTeacherPopup] = useState(false);
+  const [teacherPopup, setteacherPopup] = useState({
+    IsTeacherPopup: false,
+    id: "",
+  });
   const [deletePopup, setdeletePopup] = useState({
     IsDeletePopup: false,
     id: "",
@@ -28,7 +31,7 @@ function TeachersManagement() {
 
   useEffect(() => {
     //dispatch a thunk
-    dispatch(getAllTeachersRequest());
+    teachers.length <= 0 && dispatch(getAllTeachersRequest());
   }, [dispatch]);
 
   const columns: GridColDef[] = [
@@ -58,7 +61,16 @@ function TeachersManagement() {
       renderCell: (row: any) => {
         return (
           <>
-            <IconButton size="large" title="Edit Teacher" onClick={() => {}}>
+            <IconButton
+              size="large"
+              title="Edit Teacher"
+              onClick={() => {
+                setteacherPopup({
+                  IsTeacherPopup: true,
+                  id: row.row.id,
+                });
+              }}
+            >
               <EditIcon />
             </IconButton>
             <IconButton
@@ -82,13 +94,15 @@ function TeachersManagement() {
 
   //to close the popup turn the IsTeacherPopup state to false
   const closePopup = () => {
-    setIsTeacherPopup(false);
+    setteacherPopup({ IsTeacherPopup: false, id: "" });
     setdeletePopup({ IsDeletePopup: false, id: "", name: "" });
   };
 
   return (
     <>
-      {IsTeacherPopup ? <TeacherPopup closePopup={closePopup} /> : null}
+      {teacherPopup.IsTeacherPopup ? (
+        <TeacherPopup closePopup={closePopup} id={teacherPopup.id} />
+      ) : null}
       {deletePopup.IsDeletePopup ? (
         <DeletePopup
           closePopup={closePopup}
@@ -101,7 +115,10 @@ function TeachersManagement() {
         <div className="button-container">
           <Button
             onClick={() => {
-              setIsTeacherPopup(true);
+              setteacherPopup({
+                ...teacherPopup,
+                IsTeacherPopup: true,
+              });
             }}
             className="create-button"
             color="inherit"

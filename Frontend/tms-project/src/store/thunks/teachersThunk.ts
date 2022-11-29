@@ -7,7 +7,7 @@ import {
   getAllTeachersSuccess,
 } from "../actions/teachersAction";
 import { createTeacherSuccess } from "../actions/teachersAction";
-
+import { updateTeacherSuccess } from "../actions/teachersAction";
 export const getAllTeachersRequest = () => (dispatch: any) => {
   try {
     //API Call
@@ -25,8 +25,32 @@ export const createTeacherRequest =
     try {
       //API Call
       TeachersService.createTeacher(teacher).then(
-        (response) => {
+        (response: any) => {
           dispatch(createTeacherSuccess(response.data));
+          closePopup();
+        },
+        (error: any) => {
+          //we closed the popup only when it is success if there is badrequest it wont close
+          console.log("error", error);
+          const message =
+            (error.response &&
+              error.response.data &&
+              error.response.data.message) ||
+            error.toString();
+          console.log("message", message);
+        }
+      );
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
+export const updateTeacherRequest =
+  (id: string, teacher: any, closePopup: any) => (dispatch: any) => {
+    try {
+      //API Call
+      TeachersService.updateTeacher(id, teacher).then(
+        (response: any) => {
+          dispatch(updateTeacherSuccess(response.data));
           closePopup();
         },
         (error: any) => {

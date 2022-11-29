@@ -12,6 +12,13 @@ export const createTeacherSuccess = (teachers: any) => ({
   payload: teachers,
 });
 
+export const UPDATE_TEACHER_SUCCESS = "UPDATE_TEACHER_SUCCESS";
+
+export const updateTeacherSuccess = (teacher: any) => ({
+  type: DELETE_TEACHER_SUCCESS,
+  payload: teacher,
+});
+
 export const DELETE_TEACHER_SUCCESS = "DELETE_TEACHER_SUCCESS";
 
 export const deleteTeacherSuccess = (id: string) => ({
